@@ -34,40 +34,59 @@ class LoginServices
     // register
     public function _users($request)
     {
-        $compna = $request->get('CompanyName');
-
-        $filee = $request->file->getLogo('Logo');
+        $filee = $request->files->get('Logo');
         $filname = $filee->getClientOriginalName();
-        $directory = "Logo/" . $compna ;
-        $filepath=$directory. "/". $filname;
+        $filepath = "project/" . "/" . $filname;
+        $upload = $filee->move("project/" . "/", $filname);
 
-        $filee->move($directory,$filname);
-
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-        $content = $request->getContent();
-        $data = $serializer->deserialize($content, Refcompany::class, 'json');
-
-        // $file = $filee->move("Logo/" . $compna . "/" . $filname);
+        $compna = $request->get('CompanyName');
+        $comemail = $request->get('Email');
+        $comphone = $request->get('PhoneNo');
+        $comadd = $request->get('Address');
+        $comdist = $request->get('District');
+        $comstat = $request->get('State');
+        $compin = $request->get('PinCode');
+        $pass = $request->get('Password');
+        $encrypt = $this->encryptPassword($pass);
 
         $reg = new Refcompany;
-        $reg->setCompanyName($compna);
         $reg->setLogo($filepath);
-        $reg->setEmail($data->getEmail());
-        $encript = $this->encryptPassword($data->getPassword());
-        $reg->setPassword($encript);
-        $reg->setPhoneNo($data->getPhoneNo());
-        $reg->setAddress($data->getAddress());
-        $reg->setState($data->getState());
-        $reg->setDistrict($data->getDistrict());
-        $reg->setPinCode($data->getPinCode());
+        $reg->setEmail($comemail);
+        $reg->setPhoneNo($comphone);
+        $reg->setAddress($comadd);
+        $reg->setDistrict($comdist);
+        $reg->setState($comstat);
+        $reg->setPinCode($compin);
+        $reg->setPassword($encrypt);
 
         $this->EM->persist($reg);
         $this->EM->flush();
 
         return $reg;
     }
+    // updateLogo
+    public function _logoUpdate($id, $request)
+    {
+        $comreo = $this->EM->getRepository(Refcompany::class);
+        $uplogo = $comreo->findOneBy(['id' => $id]);
+        if ($uplogo); {
+            return 'invalide logo';
+        }
+
+        $filee = $request->files->get('Logo');
+        $filname = $filee->getClientOriginalName();
+        $filepath = "project/" . "/" . $filname;
+        $upload = $filee->move("project/" . "/", $filname);
+
+        $logo = $request->get('Logo');
+        if ($logo) {
+            $uplogo->setLogo($logo);
+        }
+        $this->EM->persist($uplogo);
+        $this->EM->flush();
+        return ['logo uploaded', $uplogo];
+    }
+
     // Login
     private $encryptionKey = 'YourEncryptionKey';
     public function _login($request)
@@ -223,8 +242,24 @@ class LoginServices
         if ($vendorgst) {
             $updobj->setGSTnumber($vendorgst);
         }
+
         $this->EM->persist($updobj);
         $this->EM->flush();
         return ["okk", $updobj];
     }
+
+    // public function _logo($request)
+    // {
+    //     $filee = $request->files->get('Logo');
+    //     $filname = $filee->getClientOriginalName();
+    //     $filepath = "project/" . "/" . $filname;
+    //     $upload = $filee->move("project/" . "/", $filname);
+
+    //     $reg=new Refcompany;
+    //     $reg->setLogo($filepath);
+
+    //     $this->EM->persist($reg);
+    //     $this->EM->flush();
+    //     return $reg;
+    // }
 }

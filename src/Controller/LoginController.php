@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
-    
+
 
 class LoginController extends AbstractController
 {
@@ -19,7 +19,7 @@ class LoginController extends AbstractController
         return $this->render('login/index.html.twig', [
             'controller_name' => 'LoginController',
         ]);
-    }   
+    }
     // register
     #[Route("/api/register", name: "users", methods: "POST")]
     public function users(Request $request, LoginServices $loginService)
@@ -46,7 +46,7 @@ class LoginController extends AbstractController
     public function getSinglevendor($id, LoginServices $LoginService)
     {
         $result = $LoginService->_getSinglevendor($id);
-        if ($result == "invalid id"){
+        if ($result == "invalid id") {
             return new ApiResponse([], 400, ["Content-Type" => "application/json"], 'json', $result, ['timezone']);
         }
         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "__initializer__", "__cloner__", "__isInitialized__"]);
@@ -63,7 +63,7 @@ class LoginController extends AbstractController
     public function deletevendor($id, LoginServices $LoginService)
     {
         $result = $LoginService->_deletevendor($id);
-        if ($result == "invalid vendor id"){
+        if ($result == "invalid vendor id") {
             return new ApiResponse([], 400, ["Content-Type" => "application/json"], 'json', $result, ['timezone']);
         }
         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "__initializer__", "__cloner__", "__isInitialized__"]);
@@ -72,10 +72,20 @@ class LoginController extends AbstractController
     #[Route('/vendor/update/{id}', name: 'vendorupdate', methods: 'POST')]
     public function vendorUpdate($id, Request $request, LoginServices $loginService)
     {
-        $result = $loginService->_vendorUpdate($id, $request);   
-            if ($result[0] == "error"){
-                return new ApiResponse([], 400, ["Content-Type" => "application/json"], 'json', $result[1], ['timezone']);
-            }
+        $result = $loginService->_vendorUpdate($id, $request);
+        if ($result[0] == "error") {
+            return new ApiResponse([], 400, ["Content-Type" => "application/json"], 'json', $result[1], ['timezone']);
+        }
+        return new ApiResponse($result[1], 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "__initializer__", "__cloner__", "__isInitialized__"]);
+    }
+    // logo update
+    #[Route('/logo/update/{id}', name: 'logoupdate', methods: 'POST')]
+    public function logoUpdate($id, Request $request, LoginServices $loginService)
+    {
+        $result = $loginService->_logoUpdate($id, $request);
+        if ($result[0] == "error") {
+            return new ApiResponse([], 400, ["Content-Type" => "application/json"], 'json', $result[1], ['timezone']);
+        }
         return new ApiResponse($result[1], 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "__initializer__", "__cloner__", "__isInitialized__"]);
     }
 }

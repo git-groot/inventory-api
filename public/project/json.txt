@@ -1,0 +1,3 @@
+Serialization:
+ It converts PHP objects or arrays into different formats like JSON, XML, or YAML. This means
+ if you have a PHP object or an array, the Serializer can turn it into a JSON string, 
