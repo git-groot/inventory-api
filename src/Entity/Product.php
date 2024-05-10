@@ -29,6 +29,10 @@ class Product
     private ?Refcompany $company = null;
     private $companyId;
 
+    #[ORM\ManyToOne]
+    private ?QuantityType $Quantitytype = null;
+    private $quantitytypeId;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -100,6 +104,27 @@ class Product
     public function setCompanyId(?string $companyId): static
     {
         $this->companyId = $companyId;
+        return $this;
+    }
+
+    public function getQuantitytype(): ?QuantityType
+    {
+        return $this->Quantitytype;
+    }
+
+    public function setQuantitytype(?QuantityType $Quantitytype): static
+    {
+        $this->Quantitytype = $Quantitytype;
+
+        return $this;
+    }
+    public function getQuantityId(): ?string
+    {
+        return $this->quantitytypeId;
+    }
+    public function setQuantityId(?string $quantitytypeId): static
+    {
+        $this->quantitytypeId = $quantitytypeId;
         return $this;
     }
 }
