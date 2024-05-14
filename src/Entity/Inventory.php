@@ -26,9 +26,6 @@ class Inventory
     private ?Product $product = null;
 
     #[ORM\ManyToOne]
-    private ?QuantityType $Quantitys = null;
-
-    #[ORM\ManyToOne]
     private ?Refcompany $company = null;
     private $productid;
     private $Quantitysid;
@@ -96,17 +93,6 @@ class Inventory
         return $this;
     }
 
-    public function getQuantitys(): ?QuantityType
-    {
-        return $this->Quantitys;
-    }
-
-    public function setQuantitys(?QuantityType $Quantitys): static
-    {
-        $this->Quantitys = $Quantitys;
-
-        return $this;
-    }
     public function getQuantitysId(): ?string
     {
         return $this->Quantitysid;

@@ -28,14 +28,9 @@ class CustomerServices
         $content = $request->getContent();
         $data = $serializer->deserialize($content, Customer::class, 'json');
 
-        $quarep = $this->EM->getRepository(QuantityType::class);
-        $quaid = $quarep->findOneBy(['id' => $data->getQuantityId()]);
-        if ($quaid == null) {
-            return 'invalide quantity id';
-        }
+
 
         $cus = new Customer;
-        $cus->setQuantity($quaid);
         $cus->setCustomerName($data->getCustomerName());
         $cus->setPhoneNo($data->getPhoneNo());
 
@@ -86,13 +81,7 @@ class CustomerServices
         if ($upcus == null) {
             return 'invalide customer id';
         }
-        $quarep=$this->EM->getRepository(QuantityType::class);
-        $quaid=$quarep->findOneBy(['id'=>$data->getQuantityId()]);
-        if($quaid==null){
-            return 'invalide quantity id';
-        }
-            $upcus->setQuantity($quaid);
-        
+
         $cusname = $data->getCustomerName('customerName');
         if ($cusname) {
             $upcus->setCustomerName($cusname);

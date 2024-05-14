@@ -51,6 +51,7 @@ class LoginServices
 
         $reg = new Refcompany;
         $reg->setLogo($filepath);
+        $reg->setCompanyName($compna);
         $reg->setEmail($comemail);
         $reg->setPhoneNo($comphone);
         $reg->setAddress($comadd);

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\Product;
+use App\Entity\QuantityType;
 use App\Entity\Refcompany;
 use App\Utils\ApiResponse;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,24 +23,37 @@ class ProductServices
     // post
     public function _product($request)
     {
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-        $content = $request->getContent();
-        $data = $serializer->deserialize($content, Product::class, 'json');
+        $proname = $request->get('name');
+        $prodes = $request->get('description');
+        $prostat = $request->get('status');
+        $prohsc = $request->get('hsfcCode');
+        $proqua = $request->get('Quantity');
+        $promes = $request->get('Mesarment');
+        $prounit = $request->get('Units');
+        $proprice = $request->get('buyingPrice');
+        $progst = $request->get('gst');
+        $procgst = $request->get('cgst');
+        $prosgst = $request->get('sgst');
 
-        $comprep = $this->EM->getRepository(Refcompany::class);
-        $compId = $comprep->findOneBy(['id' => $data->getCompanyId()]);
-        if ($compId == null) {
-            return 'invalide company id';
+        $Comrep = $this->EM->getRepository(Refcompany::class);
+        $company = $request->get('companyId');
+        $compid = $Comrep->findOneBy(['id' => $company]);
+        if ($compid == null) {
+            return "invalide company id";
         }
         $pro = new Product;
-        $pro->setCompany($compId);
-        $pro->setName($data->getName());
-        $pro->setDescription($data->getDescription());
-        $pro->setStatus($data->getStatus());
-        $pro->setHsfcCode($data->getHsfcCode());
-
+        $pro->setName($proname);
+        $pro->setDescription($prodes);
+        $pro->setStatus($prostat);
+        $pro->setHsfcCode($prohsc);
+        $pro->setCompany($compid);
+        $pro->setQuantity($proqua);
+        $pro->setMesarment($promes);
+        $pro->setUnits($prounit);
+        $pro->setBuyingPrice($proprice);
+        $pro->setGst($progst);
+        $pro->setCgst($procgst);
+        $pro->setSgst($prosgst);
         $this->EM->persist($pro);
         $this->EM->flush();
         return $pro;
@@ -84,20 +98,16 @@ class ProductServices
         $serializer = new Serializer($normalizers, $encoders);
         $content = $request->getContent();
         $data = $serializer->deserialize($content, Product::class, 'json');
-
+        dd($data);
         $prorepo = $this->EM->getRepository(Product::class);
         $uppro = $prorepo->findOneBy(['id' => $id]);
         if ($uppro == null) {
             return 'invalide product id';
         }
-       
-        $quarep=$this->EM->getRepository(Refcompany::class);
-        $quaid=$quarep->findOneBy(['id'=>$data->getCompanyId()]);
-        if($quaid==null){
-            return 'invalide quantity id';
-        }
-            $uppro->setCompany($quaid);
-        
+        $companurepo = $this->EM->getRepository(Refcompany::class);
+        $company = $data->getCompanyId();
+
+
         $proname = $data->getName('name');
         if ($proname) {
             $uppro->setName($proname);
@@ -110,10 +120,47 @@ class ProductServices
         if ($prosts) {
             $uppro->setStatus($prosts);
         }
-        $porhsc = $data->getHsfcCode('hsfcCode');
-        if ($porhsc) {
-            $uppro->setHsfcCode($porhsc);
+        $porhscode = $data->getHsfcCode('hsfcCode');
+        if ($porhscode) {
+            $uppro->setHsfcCode($porhscode);
         }
+        $proquantity = $data->getQuantity('Quantity');
+        if ($proquantity == null) {
+            $uppro->setQuantity($proquantity);
+        }
+        dd($porhscode);
+        $promesarment = $data->getMesarment('Mesarment');
+        if ($promesarment == null) {
+            $uppro->setMesarment($promesarment);
+        }
+        $prounits = $data->getUnits('Units');
+        if ($prounits == null) {
+            $uppro->setUnits($prounits);
+        }
+        $probuyprice = $data->getBuyingPrice('buyingPrice');
+        if ($probuyprice == null) {
+            $uppro->setBuyingPrice($probuyprice);
+        }
+        $progst = $data->getGst('gst');
+        if ($progst == null) {
+            $uppro->setGst($progst);
+        }
+        $procgst = $data->getCgst('cgst');
+        if ($procgst == null) {
+            $uppro->setCgst($procgst);
+        }
+        $prosgst = $data->getSgst('sgst');
+        if ($prosgst == null) {
+            $uppro->setSgst($prosgst);
+        }
+
+        $companyid = $companurepo->findOneBy(['id' => $company]);
+        if ($companyid == null) {
+            return 'invalide company id';
+        }
+        $uppro->setCompany($companyid);
+
+
         $this->EM->persist($uppro);
         $this->EM->flush();
         return ['okk', $uppro];

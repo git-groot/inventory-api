@@ -19,10 +19,7 @@ class Customer
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $PhoneNo = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?QuantityType $Quantity = null;
-    private $quantityId;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,24 +49,4 @@ class Customer
         return $this;
     }
 
-    public function getQuantity(): ?QuantityType
-    {
-        return $this->Quantity;
-    }
-
-    public function setQuantity(?QuantityType $Quantity): static
-    {
-        $this->Quantity = $Quantity;
-
-        return $this;
-    }
-    public function getQuantityId(): ?string
-    {
-        return $this->quantityId;
-    }
-    public function setQuantityId(?string $quantityId): static
-    {
-        $this->quantityId = $quantityId;
-        return $this;
-    }
 }
